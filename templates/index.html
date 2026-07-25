@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>A/B Test Conflict Decision Assistant</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+    <main class="app-shell">
+        <header class="app-header">
+            <p class="eyebrow">Experiment decision support</p>
+
+            <h1>A/B Test Conflict Decision Assistant</h1>
+
+            <p>
+                Evaluate a test where the primary metric improved
+                but conversion rate declined.
+            </p>
+        </header>
+
+        {% if error %}
+            <div class="error-message" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" class="decision-form">
+            <fieldset>
+                <legend>
+                    Is the conversion-rate decline statistically significant?
+                </legend>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="statistically_significant"
+                        value="yes"
+                        required
+                    >
+                    Yes
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="statistically_significant"
+                        value="no"
+                    >
+                    No
+                </label>
+            </fieldset>
+
+            <div class="form-field">
+                <label for="conversion_drop">
+                    Conversion-rate decline
+                </label>
+
+                <div class="number-input">
+                    <input
+                        type="number"
+                        id="conversion_drop"
+                        name="conversion_drop"
+                        min="0"
+                        step="0.1"
+                        required
+                    >
+
+                    <span>%</span>
+                </div>
+            </div>
+
+            <fieldset>
+                <legend>
+                    Is the decline concentrated in a particular user segment?
+                </legend>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="segment_concentrated"
+                        value="yes"
+                    >
+                    Yes
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="segment_concentrated"
+                        value="no"
+                    >
+                    No
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="segment_concentrated"
+                        value="unknown"
+                        checked
+                    >
+                    Not investigated
+                </label>
+            </fieldset>
+
+            <fieldset>
+                <legend>
+                    Is there evidence of added friction, confusing copy,
+                    or reduced customer trust?
+                </legend>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="qualitative_friction"
+                        value="yes"
+                    >
+                    Yes
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="qualitative_friction"
+                        value="no"
+                    >
+                    No
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="qualitative_friction"
+                        value="unknown"
+                        checked
+                    >
+                    Not investigated
+                </label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Is the identified issue fixable?</legend>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="issue_fixable"
+                        value="yes"
+                    >
+                    Yes
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="issue_fixable"
+                        value="no"
+                    >
+                    No
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="issue_fixable"
+                        value="unknown"
+                        checked
+                    >
+                    Unknown
+                </label>
+            </fieldset>
+
+            <fieldset>
+                <legend>
+                    Is the primary-metric gain a valuable business objective?
+                </legend>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="primary_metric_valuable"
+                        value="yes"
+                    >
+                    Yes
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="primary_metric_valuable"
+                        value="no"
+                    >
+                    No
+                </label>
+            </fieldset>
+
+            <fieldset>
+                <legend>
+                    Is this experiment part of a longer-term redesign?
+                </legend>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="longer_term_redesign"
+                        value="yes"
+                    >
+                    Yes
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="longer_term_redesign"
+                        value="no"
+                    >
+                    No
+                </label>
+            </fieldset>
+
+            <button type="submit">
+                Evaluate experiment
+                <span aria-hidden="true">→</span>
+            </button>
+        </form>
+    </main>
+</body>
+</html>

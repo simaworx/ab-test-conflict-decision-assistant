@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Experiment Recommendation</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+    <main class="app-shell result-page">
+        <p class="eyebrow">Recommended decision</p>
+
+        <section class="result-panel">
+            <h1>{{ result.recommendation.value }}</h1>
+
+            <p>{{ result.explanation }}</p>
+
+            {% if result.monitoring_required %}
+                <div class="monitoring-note">
+                    Post-launch monitoring is required.
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="input-summary">
+            <h2>Scenario summary</h2>
+
+            <dl>
+                <div>
+                    <dt>Statistically significant</dt>
+                    <dd>
+                        {{ "Yes" if inputs.statistically_significant else "No" }}
+                    </dd>
+                </div>
+
+                <div>
+                    <dt>Conversion decline</dt>
+                    <dd>{{ inputs.conversion_drop_percent }}%</dd>
+                </div>
+            </dl>
+        </section>
+
+        <a href="{{ url_for('index') }}" class="secondary-button">
+            ← Evaluate another scenario
+        </a>
+    </main>
+</body>
+</html>
