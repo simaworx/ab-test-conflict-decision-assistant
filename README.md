@@ -1,53 +1,140 @@
 # A/B Test Conflict Decision Assistant
 
-A rule-based Flask application for evaluating conflicting A/B test results.
+An interactive Flask application that transforms an A/B testing decision
+framework into a guided branching decision tree.
 
-## The problem
+The tool helps product teams evaluate situations where the primary
+experiment metric improves, but conversion rate declines, and provides a
+structured recommendation based on the answers selected.
 
-A/B test results can produce conflicting signals. A variant may improve
-the primary metric while reducing conversion rate, creating uncertainty
-about whether the variant should be launched.
+## Demo
 
-This project provides a structured process for evaluating that trade-off.
+![Decision Tree Demo](static/images/demo.png)
 
-## What the framework evaluates
+## Overview
 
-- Statistical significance
-- Magnitude of the conversion-rate decline
-- Impact on specific user segments
-- Customer friction and qualitative feedback
-- Whether the issue is fixable
-- Long-term business value
-- Rollout and monitoring options
+A/B testing decisions are not always straightforward.
 
-## Possible outcomes
+An experiment may show: 
 
-- Proceed with rollout
-- Launch with post-launch monitoring
-- Investigate further
-- Redesign the variant
-- Prioritise overall conversion
-- Do not launch
+- Improvement in the primary success metric 
+- A decline in conversion rate
 
-## Tools and methods
+This creates a decision conflict: 
+- Should the experiment launch? 
+- Is the conversion decline meaningful? 
+- Does the impact affect a specific customer segment? 
+- Is there a usability or trust issue? 
+- Should the experiment be redesigned?
 
-- A/B testing principles
-- Statistical significance
-- Metric trade-off analysis
-- User segmentation
-- Qualitative analysis
-- Decision-tree modelling
-- HTML
-- CSS
+This project recreates that decision-making process as an interactive
+tree, guiding users through each question until reaching a final
+recommendation.
 
-## Live project
+## Features
 
-Add the GitHub Pages link here after deployment.
+-   Interactive branching decision tree
+-   Question-based navigation flow
+-   Visual representation of A/B test decision tree framework logic
+-   Multiple recommendation outcomes
+-   Restart functionality to explore different scenarios
+-   Responsive interface
+-   Rule-based decision engine
 
-## Project image
+## Tech Stack
 
-![A/B Test Conflict Decision Tree](static/decision-tree.png)
+Backend: 
+
+- Python 
+- Flask
+
+Frontend: 
+
+- HTML 
+- CSS 
+- JavaScript
+
+Logic: 
+
+- Rule-based decision tree engine
+
+## Project Structure
+
+ab-test-conflict-decision-assistant/
+
+├── app.py 
+├── decision_engine.py 
+├── requirements.txt 
+├── README.md 
+├── LICENSE 
+├── static/ 
+│ ├── css/ 
+│ │ └── style.css
+│ ├── images/
+│ │ ├── decision-tree.png 
+│ │ └── demo.png 
+│ └── js/ 
+│   └── tree.js 
+├── templates/ 
+│ └── index.html 
+└── tests/ 
+  └── test_tree.py
+  
+## Running Locally
+
+Clone the repository:
+
+git clone
+https://github.com/simaworx/ab-test-conflict-decision-assistant.git
+
+Navigate into the project:
+
+    cd ab-test-conflict-decision-assistant
+
+Create virtual environment:
+
+    python -m venv .venv
+
+Activate environment:
+
+    Windows: .venv
+
+    Mac/Linux: source .venv/bin/activate
+
+Install dependencies:
+
+    pip install -r requirements.txt
+
+Run application:
+
+    python app.py
+
+Open in browser:
+
+    http://127.0.0.1:5000
+
+## Testing
+
+Run:
+
+ pytest
+
+## Why I Built This
+
+In product analytics, experiment results often require judgement rather
+than a simple winner/loser decision.
+
+This project explores how analytical frameworks and experimentation
+principles can be converted into practical tools that help teams make
+more consistent and informed decisions.
 
 ## Author
 
-Created by Simona Šukytė.
+Simona Sukyte
+
+Product Data Analyst focused on: 
+- Product analytics 
+- A/B testing 
+- Data visualisation 
+- Dashboard development 
+- Workflow automation
