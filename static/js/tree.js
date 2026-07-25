@@ -3,8 +3,156 @@
 const treeContainer = document.getElementById("tree");
 const restartButton = document.getElementById("restartTree");
 
-let treeData = null;
-
+const treeData = {
+    intro: { 
+        id: "intro", 
+        node_type: "statement", 
+        text: "Primary metric is up, but conversion rate is down.", 
+        options: [
+            {
+                label: "Start", next: "significance" 
+            }
+        ] 
+    },
+    significance: { 
+        id: "significance", 
+        node_type: "question", 
+        text: "Is the drop in conversion rate statistically significant?", 
+        options: [
+            { 
+                label: "YES", 
+                next: "drop_magnitude" 
+            }, 
+            { 
+                label: "NO", 
+                next: "treat_as_noise" 
+            }
+        ] 
+    },
+    treat_as_noise: {
+        id: "treat_as_noise", 
+        node_type: "result", 
+        text: "Treat the decline as noise. Proceed with rollout and monitor conversion after launch to confirm stability.", 
+        options: null },
+    drop_magnitude: { 
+        id: "drop_magnitude", 
+        node_type: "question", 
+        text: "What is the magnitude of the conversion rate drop?", 
+        options: [
+            { 
+                label: "Less than 3%", 
+                next: "primary_metric_value" 
+            }, 
+            { 
+                label: "Between 3% and 5%", 
+                next: "segment_concentration" 
+            }, 
+            { 
+                label: "Greater than 5%", 
+                next: "do_not_launch" 
+            }
+        ] 
+    },
+    primary_metric_value: {
+        id: "primary_metric_value", 
+        node_type: "question", 
+        text: "Is the gain in the primary metric a valuable business goal?", 
+        options: [
+            { 
+                label: "YES", 
+                next: "launch_with_monitoring" 
+            }, 
+            { 
+                label: "NO", 
+                next: "long_term_redesign" 
+            }
+        ] 
+    },
+    long_term_redesign: {
+        id: "long_term_redesign", 
+        node_type: "question", 
+        text: "Is this test part of a longer-term redesign?", 
+        options: [
+            { 
+                label: "YES", 
+                next: "launch_with_monitoring" 
+            }, 
+            { 
+                label: "NO", 
+                next: "prioritise_conversion" 
+            }
+        ] 
+    },
+    segment_concentration: { 
+        id: "segment_concentration", 
+        node_type: "question", 
+        text: "Is the decline concentrated in a specific segment, such as mobile users or returning customers?", 
+        options: [
+            { 
+                label: "YES", 
+                next: "qualitative_issue" 
+            }, 
+            { 
+                label: "NO", 
+                next: "primary_metric_value" 
+            }
+        ] 
+    },
+    qualitative_issue: { 
+        id: "qualitative_issue", 
+        node_type: "question", 
+        text: "Is there added friction, confusing copy, or a loss of trust?", 
+        options: [
+            { 
+                label: "YES", 
+                next: "issue_fixable" 
+            }, 
+            { 
+                label: "NO", 
+                next: "primary_metric_value" 
+            }
+        ] 
+    },
+    issue_fixable: { 
+        id: "issue_fixable", 
+        node_type: "question", 
+        text: "Is the identified issue fixable?", 
+        options: [
+            { 
+                label: "YES", 
+                next: "fix_and_monitor" 
+            }, 
+            { 
+                label: "NO", 
+                next: "prioritise_conversion" 
+            }
+        ] 
+    },
+    launch_with_monitoring: { 
+        id: "launch_with_monitoring", 
+        node_type: "result", 
+        text: "Consider launching with post-launch monitoring.", 
+        options: null 
+    },
+    fix_and_monitor: { 
+        id: "fix_and_monitor", 
+        node_type: "result", 
+        text: "Fix the identified issue and re-run the experiment.", 
+        options: null 
+    },
+    prioritise_conversion: { 
+        id: "prioritise_conversion", 
+        node_type: "result", 
+        text: "Do not launch. Prioritise overall conversion instead.", 
+        options: null 
+    },
+    do_not_launch: { 
+        id: "do_not_launch", 
+        node_type: "result", 
+        text: "Do not launch. Capture the learnings and design a new approach.", 
+        options: null 
+    }
+};
 
 /**
  * Creates one visible tree node.
@@ -59,7 +207,7 @@ function createBranches(node) {
 
     branches.style.setProperty(
         "--branch-count",
-        Object.keys(node.options || {}).length
+        (node.options || []).length
     );
 
     (node.options || []).forEach(
@@ -235,32 +383,7 @@ function restartTree() {
 /**
  * Loads the Python tree from Flask.
  */
-async function loadTree() {
-    try {
-        const response = await fetch("/api/tree");
-
-        if (!response.ok) {
-            throw new Error(
-                `Server returned status ${response.status}.`
-            );
-        }
-
-        treeData = await response.json();
-
-        renderTree();
-
-    } catch (error) {
-        console.error(error);
-
-        showError(
-            "The decision tree could not be loaded. " +
-            "Check that the Flask server is running."
-        );
-    }
-}
-
 
 restartButton.addEventListener("click", restartTree);
 
-
-loadTree();
+renderTree();

@@ -1,72 +1,36 @@
 # A/B Test Conflict Decision Assistant
 
-An interactive Flask application that transforms an A/B testing decision
-framework into a guided branching decision tree.
-
-The tool helps product teams evaluate situations where the primary
-experiment metric improves, but conversion rate declines, and provides a
-structured recommendation based on the answers selected.
+An interactive decision-tree tool for evaluating A/B tests where the primary metric improves while conversion rate declines.
 
 ## Demo
 
-![Decision Tree Demo](static/images/demo.png)
-
-## Overview
-
-A/B testing decisions are not always straightforward.
-
-An experiment may show: 
-
-- Improvement in the primary success metric 
-- A decline in conversion rate
-
-This creates a decision conflict: 
-- Should the experiment launch? 
-- Is the conversion decline meaningful? 
-- Does the impact affect a specific customer segment? 
-- Is there a usability or trust issue? 
-- Should the experiment be redesigned?
-
-This project recreates that decision-making process as an interactive
-tree, guiding users through each question until reaching a final
-recommendation.
+![A/B Test Conflict Decision Assistant](static/images/demo.png)
 
 ## Features
 
--   Interactive branching decision tree
--   Question-based navigation flow
--   Visual representation of A/B test decision tree framework logic
--   Multiple recommendation outcomes
--   Restart functionality to explore different scenarios
--   Responsive interface
--   Rule-based decision engine
+- Interactive branching decision flow
+- Ordered answer branches
+- Responsive desktop and mobile layout
+- Clear recommendation outcomes
+- Restart controls at page level and inside final recommendations
+- No server or database required for the live version
 
-## Tech Stack
+## How it works
 
-Backend: 
+The deployed version is fully static:
 
-- Python 
-- Flask
-
-Frontend: 
-
-- HTML 
-- CSS 
-- JavaScript
-
-Logic: 
-
-- Rule-based decision tree engine
+- `index.html` provides the page structure
+- `static/css/style.css` controls the interface
+- `static/js/tree.js` contains the tree data and interaction logic
 
 ## Project Structure
 
 ```text
 ab-test-conflict-decision-assistant/
-├── app.py
-├── decision_engine.py
-├── requirements.txt
+├── index.html
 ├── README.md
 ├── LICENSE
+├── .gitignore
 │
 ├── static/
 │   ├── css/
@@ -75,70 +39,31 @@ ab-test-conflict-decision-assistant/
 │   │   ├── decision-tree.png
 │   │   └── demo.png
 │   └── js/
-│       └── tree.js
-│
-├── templates/
-│   └── index.html
-│
-└── tests/
-    └── test_tree.py
+        └── tree.js
 ```
-  
-## Running Locally
 
-Clone the repository:
+## Run the static version locally
 
-git clone
-https://github.com/simaworx/ab-test-conflict-decision-assistant.git
+```bash
+python -m http.server 8000
+```
 
-Navigate into the project:
+Open `http://127.0.0.1:8000`.
 
-    cd ab-test-conflict-decision-assistant
+## Embed into a page
 
-Create virtual environment:
-
-    python -m venv .venv
-
-Activate environment:
-
-    Windows: .venv
-
-    Mac/Linux: source .venv/bin/activate
-
-Install dependencies:
-
-    pip install -r requirements.txt
-
-Run application:
-
-    python app.py
-
-Open in browser:
-
-    http://127.0.0.1:5000
-
-## Testing
-
-Run:
-
-    pytest
-
-## Why I Built This
-
-In product analytics, experiment results often require judgement rather
-than a simple winner/loser decision.
-
-This project explores how analytical frameworks and experimentation
-principles can be converted into practical tools that help teams make
-more consistent and informed decisions.
+```html
+<iframe
+    src="YOUR_GITHUB_PAGES_URL"
+    title="A/B Test Conflict Decision Tree"
+    width="100%"
+    height="950"
+    loading="lazy"
+></iframe>
+```
 
 ## Author
 
-Simona Sukyte
+**Simona Sukyte**
 
-Product Data Analyst focused on: 
-- Product analytics 
-- A/B testing 
-- Data visualisation 
-- Dashboard development 
-- Workflow automation
+Product Data Analyst focused on product analytics, A/B testing, reporting, data visualisation, and workflow automation.
