@@ -1,275 +1,203 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Final
 
 
 @dataclass(frozen=True)
-class Option:
-    label: str
-    value: str
-    next_step: str
+class TreeNode:
+    id: str
+    node_type: str
+    text: str
+    from typing import Any
+
+    options: list[dict[str, Any]] | None = None
 
 
-@dataclass(frozen=True)
-class QuestionNode:
-    question: str
-    help_text: str
-    options: tuple[Option, ...]
+TREE: Final[dict[str, TreeNode]] = {
 
+    "intro": TreeNode(
+        id="intro",
+        node_type="statement",
+        text="Primary metric is up, but conversion rate is down.",
+        options=[
+            {
+                "label": "Start",
+                "next": "significance"
+            }
+        ],
+    ),
 
-@dataclass(frozen=True)
-class ResultNode:
-    title: str
-    explanation: str
-    status: str
+    "significance": TreeNode(
+        id="significance",
+        node_type="question",
+        text="Is the drop in conversion rate statistically significant?",
+        options=[
+            {
+                "label": "YES",
+                "next": "drop_magnitude"
+            },
+            {
+                "label": "NO",
+                "next": "treat_as_noise"
+            }
+        ],
+    ),
 
-
-QUESTIONS: Final[dict[str, QuestionNode]] = {
-    "significance": QuestionNode(
-        question="Is the conversion-rate decline statistically significant?",
-        help_text=(
-            "Consider the p-value, confidence interval, sample size, "
-            "and whether the test had sufficient power."
-        ),
-        options=(
-            Option(
-                label="Yes",
-                value="yes",
-                next_step="drop_size",
-            ),
-            Option(
-                label="No",
-                value="no",
-                next_step="rollout_monitor",
-            ),
+    "treat_as_noise": TreeNode(
+        id="treat_as_noise",
+        node_type="result",
+        text=(
+            "Treat the decline as noise. Proceed with rollout and monitor "
+            "conversion after launch to confirm stability."
         ),
     ),
 
-    "drop_size": QuestionNode(
-        question="How large is the conversion-rate decline?",
-        help_text=(
-            "Select the relative decline observed between the control "
-            "and variant conversion rates."
-        ),
-        options=(
-            Option(
-                label="Less than 3%",
-                value="under_3",
-                next_step="primary_value",
-            ),
-            Option(
-                label="Between 3% and 5%",
-                value="between_3_5",
-                next_step="segment_concentration",
-            ),
-            Option(
-                label="More than 5%",
-                value="over_5",
-                next_step="do_not_launch",
-            ),
-        ),
+    "drop_magnitude": TreeNode(
+        id="drop_magnitude",
+        node_type="question",
+        text="What is the magnitude of the conversion rate drop?",
+        options=[
+            {
+                "label": "Less than 3%",
+                "next": "primary_metric_value"
+            },
+            {
+                "label": "Between 3% and 5%",
+                "next": "segment_concentration"
+            },
+            {
+                "label": "Greater than 5%",
+                "next": "do_not_launch"
+            }
+        ],
     ),
 
-    "segment_concentration": QuestionNode(
-        question="Is the decline concentrated in a particular user segment?",
-        help_text=(
-            "Review device, channel, customer type, geography, "
-            "new versus returning users, and other relevant segments."
-        ),
-        options=(
-            Option(
-                label="Yes",
-                value="yes",
-                next_step="qualitative_friction",
-            ),
-            Option(
-                label="No",
-                value="no",
-                next_step="investigate_further",
-            ),
-            Option(
-                label="Not yet investigated",
-                value="unknown",
-                next_step="investigate_further",
-            ),
-        ),
+    "primary_metric_value": TreeNode(
+        id="primary_metric_value",
+        node_type="question",
+        text="Is the gain in the primary metric a valuable business goal?",
+        options=[
+            {
+                "label": "YES",
+                "next": "launch_with_monitoring"
+            },
+            {
+                "label": "NO",
+                "next": "long_term_redesign"
+            }
+        ],
     ),
 
-    "qualitative_friction": QuestionNode(
-        question="Is there evidence of customer friction or reduced trust?",
-        help_text=(
-            "Consider user feedback, session recordings, support contacts, "
-            "confusing content, and unexpected behaviour."
-        ),
-        options=(
-            Option(
-                label="Yes",
-                value="yes",
-                next_step="issue_fixable",
-            ),
-            Option(
-                label="No",
-                value="no",
-                next_step="investigate_further",
-            ),
-            Option(
-                label="Not yet investigated",
-                value="unknown",
-                next_step="investigate_further",
-            ),
-        ),
+    "long_term_redesign": TreeNode(
+        id="long_term_redesign",
+        node_type="question",
+        text="Is this test part of a longer-term redesign?",
+        options=[
+            {
+                "label": "YES",
+                "next": "launch_with_monitoring"
+            },
+            {
+                "label": "NO",
+                "next": "prioritise_conversion"
+            }
+        ],
     ),
 
-    "issue_fixable": QuestionNode(
-        question="Can the identified issue be fixed without losing the benefit?",
-        help_text=(
-            "Consider whether the problematic element can be changed "
-            "while preserving the improvement in the primary metric."
+    "segment_concentration": TreeNode(
+        id="segment_concentration",
+        node_type="question",
+        text=(
+            "Is the decline concentrated in a specific segment, such as "
+            "mobile users or returning customers?"
         ),
-        options=(
-            Option(
-                label="Yes",
-                value="yes",
-                next_step="fix_and_monitor",
-            ),
-            Option(
-                label="No",
-                value="no",
-                next_step="scrap_variant",
-            ),
-        ),
+        options=[
+            {
+                "label": "YES",
+                "next": "qualitative_issue"
+            },
+            {
+                "label": "NO",
+                "next": "primary_metric_value"
+            }
+        ],
     ),
 
-    "primary_value": QuestionNode(
-        question="Does the primary metric represent a valuable business outcome?",
-        help_text=(
-            "The metric should represent meaningful customer or commercial "
-            "value rather than an isolated engagement increase."
-        ),
-        options=(
-            Option(
-                label="Yes",
-                value="yes",
-                next_step="rollout_monitor",
-            ),
-            Option(
-                label="No",
-                value="no",
-                next_step="long_term_redesign",
-            ),
-        ),
+    "qualitative_issue": TreeNode(
+        id="qualitative_issue",
+        node_type="question",
+        text="Is there added friction, confusing copy, or a loss of trust?",
+        options=[
+            {
+                "label": "YES",
+                "next": "issue_fixable"
+            },
+            {
+                "label": "NO",
+                "next": "primary_metric_value"
+            }
+        ],
     ),
 
-    "long_term_redesign": QuestionNode(
-        question="Is this experiment part of a longer-term product redesign?",
-        help_text=(
-            "A temporary decline may require further investigation if the test "
-            "supports a larger strategic change."
-        ),
-        options=(
-            Option(
-                label="Yes",
-                value="yes",
-                next_step="investigate_further",
-            ),
-            Option(
-                label="No",
-                value="no",
-                next_step="prioritise_conversion",
-            ),
-        ),
-    ),
-}
-
-
-RESULTS: Final[dict[str, ResultNode]] = {
-    "rollout_monitor": ResultNode(
-        title="Proceed with a monitored rollout",
-        explanation=(
-            "The evidence does not currently justify rejecting the variant. "
-            "Proceed carefully and monitor conversion, the primary metric, "
-            "and relevant guardrail metrics after launch."
-        ),
-        status="proceed",
+    "issue_fixable": TreeNode(
+        id="issue_fixable",
+        node_type="question",
+        text="Is the identified issue fixable?",
+        options=[
+            {
+                "label": "YES",
+                "next": "fix_and_monitor"
+            },
+            {
+                "label": "NO",
+                "next": "prioritise_conversion"
+            }
+        ],
     ),
 
-    "investigate_further": ResultNode(
-        title="Investigate further before making a decision",
-        explanation=(
-            "The current evidence is not sufficient for a confident rollout "
-            "decision. Complete additional segmentation, qualitative analysis, "
-            "or follow-up experimentation."
-        ),
-        status="investigate",
+    "launch_with_monitoring": TreeNode(
+        id="launch_with_monitoring",
+        node_type="result",
+        text="Consider launching with post-launch monitoring.",
     ),
 
-    "fix_and_monitor": ResultNode(
-        title="Fix the issue, then consider a monitored rollout",
-        explanation=(
-            "The conversion decline appears to have an identifiable and "
-            "potentially fixable cause. Address the issue before launching "
-            "and validate the revised experience."
-        ),
-        status="revise",
+    "fix_and_monitor": TreeNode(
+        id="fix_and_monitor",
+        node_type="result",
+        text="Fix the identified issue and re-run the experiment.",
     ),
 
-    "scrap_variant": ResultNode(
-        title="Consider scrapping the variant",
-        explanation=(
-            "The conversion impact is linked to an issue that cannot currently "
-            "be resolved without losing the benefit of the variant."
-        ),
-        status="stop",
+    "investigate_further": TreeNode(
+        id="investigate_further",
+        node_type="result",
+        text="Investigate further before making a rollout decision.",
     ),
 
-    "do_not_launch": ResultNode(
-        title="Do not launch the variant",
-        explanation=(
-            "The statistically significant conversion decline is greater than "
-            "5%. The risk to overall performance outweighs the observed benefit."
-        ),
-        status="stop",
+    "prioritise_conversion": TreeNode(
+        id="prioritise_conversion",
+        node_type="result",
+        text="Do not launch. Prioritise overall conversion instead.",
     ),
 
-    "prioritise_conversion": ResultNode(
-        title="Prioritise overall conversion",
-        explanation=(
-            "The primary-metric gain does not represent sufficient strategic "
-            "value to justify the conversion decline."
+    "do_not_launch": TreeNode(
+        id="do_not_launch",
+        node_type="result",
+        text=(
+            "Do not launch. Capture the learnings and design a new approach."
         ),
-        status="stop",
     ),
 }
 
-
-def get_question(node_id: str) -> QuestionNode:
-    """Return a question node by its identifier."""
+def get_node(node_id: str) -> TreeNode:
+    """Return a decision-tree node by ID."""
     try:
-        return QUESTIONS[node_id]
+        return TREE[node_id]
     except KeyError as exc:
-        raise ValueError(f"Unknown question node: {node_id}") from exc
+        raise ValueError(f"Unknown tree node: {node_id}") from exc
 
 
-def get_result(result_id: str) -> ResultNode:
-    """Return a result node by its identifier."""
-    try:
-        return RESULTS[result_id]
-    except KeyError as exc:
-        raise ValueError(f"Unknown result node: {result_id}") from exc
-
-
-def follow_branch(node_id: str, answer: str) -> str:
-    """Return the next question or result for the selected answer."""
-    question = get_question(node_id)
-
-    for option in question.options:
-        if option.value == answer:
-            return option.next_step
-
-    raise ValueError(
-        f"Answer '{answer}' is not valid for question '{node_id}'."
-    )
-
-
-def is_result(node_id: str) -> bool:
-    """Return True when the supplied node represents a final result."""
-    return node_id in RESULTS
+def serialise_tree() -> dict[str, dict]:
+    """Convert the decision tree into JSON-compatible dictionaries."""
+    return {
+        node_id: asdict(node)
+        for node_id, node in TREE.items()
+    }

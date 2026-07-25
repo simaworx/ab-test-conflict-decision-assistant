@@ -2,9 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>A/B Test Conflict Decision Assistant</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="An interactive A/B testing conflict decision tree."
+    >
+
+    <title>A/B Test Conflict Decision Tree</title>
 
     <link
         rel="stylesheet"
@@ -13,35 +22,50 @@
 </head>
 
 <body>
-    <main class="app-shell landing-page">
-        <section class="landing-content">
-            <p class="eyebrow">
-                Product experimentation framework
+    <main class="app-page">
+
+        <header class="app-header">
+            <p class="eyebrow">Interactive experimentation framework</p>
+
+            <h1>A/B Test Conflict Decision Tree</h1>
+
+            <p class="app-description">
+                Follow the branches to evaluate an experiment where the
+                primary metric improves but conversion rate declines.
             </p>
 
-            <h1>A/B Test Conflict Decision Assistant</h1>
+            <button
+                type="button"
+                id="restartTree"
+                class="restart-button"
+                hidden
+            >
+                Restart tree
+            </button>
+        </header>
 
-            <p class="landing-description">
-                Work through a guided decision tree for experiments
-                where the primary metric improves but conversion rate declines.
+        <section
+            id="tree"
+            class="decision-tree"
+            aria-label="Interactive A/B test decision tree"
+            aria-live="polite"
+        >
+            <p class="loading-message">
+                Loading decision tree...
             </p>
-
-            <a href="{{ url_for('start') }}" class="primary-button">
-                Start evaluation
-                <span aria-hidden="true">→</span>
-            </a>
         </section>
 
-        <figure class="reference-tree">
-            <img
-                src="{{ url_for('static', filename='images/decision-tree.png') }}"
-                alt="Original A/B test conflict decision tree"
-            >
+        <noscript>
+            <p class="error-message">
+                JavaScript must be enabled to use the interactive tree.
+            </p>
+        </noscript>
 
-            <figcaption>
-                The interactive assistant is based on this decision framework.
-            </figcaption>
-        </figure>
     </main>
+
+    <script
+        src="{{ url_for('static', filename='js/tree.js') }}"
+        defer
+    ></script>
 </body>
 </html>
