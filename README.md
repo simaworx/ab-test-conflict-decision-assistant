@@ -29,16 +29,19 @@ This project recreates that decision-making process as an interactivetree, guidi
 
 ## Features
 
-- Interactive branching decision flow
-- Ordered answer branches
-- Responsive desktop and mobile layout
-- Clear recommendation outcomes
-- Restart controls at page level and inside final recommendations
-- No server or database required for the live version
+- Interactive A/B test conflict decision flow
+- Guides decision-making when primary metrics improve but conversion rate declines
+- Ordered branching logic based on experiment evaluation criteria
+- Clear rollout recommendations and next-step actions
+- Responsive desktop and mobile interface
+- Restart functionality for exploring different scenarios
+- Fully client-side implementation with no database required
 
-## Live project
+## Live Project
 
-Open `https://simaworx.github.io/ab-test-conflict-decision-assistant/`
+Try the interactive decision tree here:
+
+[Open A/B Test Conflict Decision Assistant](https://simaworx.github.io/ab-test-conflict-decision-assistant/)
 
 ## Tech Stack
 
