@@ -1,10 +1,31 @@
 # A/B Test Conflict Decision Assistant
 
-An interactive decision-tree tool for evaluating A/B tests where the primary metric improves while conversion rate declines.
+An interactive Flask application that transforms an A/B testing decisionframework into a guided branching decision tree.
+
+The tool helps product teams evaluate situations where the primary experiment metric improves, but conversion rate declines, and provides a structured recommendation based on the answers selected.
 
 ## Demo
 
 ![A/B Test Conflict Decision Assistant](static/images/demo.png)
+
+## Overview
+
+A/B testing decisions are not always straightforward.
+
+An experiment may show:
+
+- Improvement in the primary success metric
+- A decline in conversion rate
+
+This creates a decision conflict:
+
+- Should the experiment launch?
+- Is the conversion decline meaningful?
+- Does the impact affect a specific customer segment?
+- Is there a usability or trust issue?
+- Should the experiment be redesigned?
+
+This project recreates that decision-making process as an interactivetree, guiding users through each question until reaching a finalrecommendation.
 
 ## Features
 
@@ -14,6 +35,14 @@ An interactive decision-tree tool for evaluating A/B tests where the primary met
 - Clear recommendation outcomes
 - Restart controls at page level and inside final recommendations
 - No server or database required for the live version
+
+## Tech Stack
+
+- HTML
+- CSS
+- JavaScript
+
+Logic: Rule-based decision tree engine
 
 ## How it works
 
@@ -32,13 +61,13 @@ ab-test-conflict-decision-assistant/
 ├── LICENSE
 ├── .gitignore
 │
-├── static/
-│   ├── css/
-│   │   └── style.css
-│   ├── images/
-│   │   ├── decision-tree.png
-│   │   └── demo.png
-│   └── js/
+└──  static/
+    ├── css/
+    │   └── style.css
+    ├── images/
+    │   ├── decision-tree.png
+    │   └── demo.png
+    └── js/
         └── tree.js
 ```
 
@@ -61,6 +90,12 @@ Open `http://127.0.0.1:8000`.
     loading="lazy"
 ></iframe>
 ```
+
+## Why I Built This
+
+In product analytics, experiment results often require judgement rather than a simple winner/loser decision.
+
+This project explores how analytical frameworks and experimentation principles can be converted into practical tools that help teams make more consistent and informed decisions.
 
 ## Author
 
