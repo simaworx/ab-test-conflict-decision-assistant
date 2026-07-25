@@ -36,6 +36,10 @@ This project recreates that decision-making process as an interactivetree, guidi
 - Restart controls at page level and inside final recommendations
 - No server or database required for the live version
 
+## Live project
+
+Open `https://simaworx.github.io/ab-test-conflict-decision-assistant/`
+
 ## Tech Stack
 
 - HTML
