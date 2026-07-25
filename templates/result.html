@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Experiment Recommendation</title>
+    <title>{{ result.title }}</title>
 
     <link
         rel="stylesheet"
@@ -13,42 +13,58 @@
 </head>
 
 <body>
-    <main class="app-shell result-page">
-        <p class="eyebrow">Recommended decision</p>
+    <main class="tree-page result-layout">
+
+        <aside class="decision-path">
+            <p class="eyebrow">Completed path</p>
+
+            <div class="path-tree">
+                {% for step in path %}
+                    <div class="path-node completed">
+                        <span class="path-dot"></span>
+
+                        <div>
+                            <p>{{ step.question }}</p>
+                            <strong>{{ step.answer }}</strong>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="path-node result">
+                    <span class="path-dot"></span>
+
+                    <div>
+                        <p>Recommendation reached</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
         <section class="result-panel">
-            <h1>{{ result.recommendation.value }}</h1>
+            <p class="eyebrow">Recommended decision</p>
 
-            <p>{{ result.explanation }}</p>
+            <span class="result-status {{ result.status }}">
+                {{ result.status }}
+            </span>
 
-            {% if result.monitoring_required %}
-                <div class="monitoring-note">
-                    Post-launch monitoring is required.
-                </div>
-            {% endif %}
+            <h1>{{ result.title }}</h1>
+
+            <p class="result-explanation">
+                {{ result.explanation }}
+            </p>
+
+            <div class="result-actions">
+                <a href="{{ url_for('restart') }}" class="primary-button">
+                    Start again
+                    <span aria-hidden="true">↻</span>
+                </a>
+
+                <a href="{{ url_for('index') }}" class="secondary-button">
+                    Return to overview
+                </a>
+            </div>
         </section>
 
-        <section class="input-summary">
-            <h2>Scenario summary</h2>
-
-            <dl>
-                <div>
-                    <dt>Statistically significant</dt>
-                    <dd>
-                        {{ "Yes" if inputs.statistically_significant else "No" }}
-                    </dd>
-                </div>
-
-                <div>
-                    <dt>Conversion decline</dt>
-                    <dd>{{ inputs.conversion_drop_percent }}%</dd>
-                </div>
-            </dl>
-        </section>
-
-        <a href="{{ url_for('index') }}" class="secondary-button">
-            ← Evaluate another scenario
-        </a>
     </main>
 </body>
 </html>
