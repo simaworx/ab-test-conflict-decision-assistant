@@ -60,25 +60,29 @@ Logic:
 
 ## Project Structure
 
+```text
 ab-test-conflict-decision-assistant/
-
-├── app.py 
-├── decision_engine.py 
-├── requirements.txt 
-├── README.md 
-├── LICENSE 
-├── static/ 
-│ ├── css/ 
-│ │ └── style.css
-│ ├── images/
-│ │ ├── decision-tree.png 
-│ │ └── demo.png 
-│ └── js/ 
-│   └── tree.js 
-├── templates/ 
-│ └── index.html 
-└── tests/ 
-  └── test_tree.py
+├── app.py
+├── decision_engine.py
+├── requirements.txt
+├── README.md
+├── LICENSE
+│
+├── static/
+│   ├── css/
+│   │   └── style.css
+│   ├── images/
+│   │   ├── decision-tree.png
+│   │   └── demo.png
+│   └── js/
+│       └── tree.js
+│
+├── templates/
+│   └── index.html
+│
+└── tests/
+    └── test_tree.py
+```
   
 ## Running Locally
 
